@@ -1,0 +1,2 @@
+# BlazorServerApp
+Blazor Server Application
