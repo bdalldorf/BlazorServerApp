@@ -1,0 +1,160 @@
+﻿@page "/componentsPage"
+@inject IJSRuntime jsRuntime
+
+<PageTitle>Components</PageTitle>
+<h1>Components</h1>
+
+<div class="container">
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Phone Number Control</h5>
+                <div class="card-body">
+                    <div class="col-md-12 d-flex justify-content-left">
+                        <PhoneNumberComponent @ref="InputToFocusOn" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">SSN Number Control</h5>
+                <div class="card-body">
+                    <div class="col-md-8 d-flex justify-content-left">
+                        <SSNNumberComponent />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Calendar Control</h5>
+                <div class="card-body">
+                    <div class="col-md-4 d-flex justify-content-left">
+                        <CalendarComponent />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Integer Control</h5>
+                <div class="card-body">
+                    <div class="col-md-12 d-flex justify-content-left">
+                        <IntegerComponent />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Javascript Tests</h5>
+                <div class="card-body">
+                    <div class="col-md-8 d-flex justify-content-left">
+                        <JavascriptTestComponent />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Download From Stream</h5>
+                <div class="card-body">
+                    <div class="col-md-8 d-flex justify-content-left">
+                        <FileStreamDownloadComponent @ref=_FileStreamDownloadComponent OnClickCallback=DownloadImage />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Upload File To Stream</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <FileStreamUploadComponent @ref=_FileStreamUploadComponent OnClickCallback=LoadImage ButtonText="Load File" />
+                        </div>
+                        <div class="col">
+                            <img src="@_ImageDataURL" alt="Example PNG Image" style="width:100%; max-width:100px; height:auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private PhoneNumberComponent InputToFocusOn;
+    private Stream? TestStream { get; set; }
+    FileStreamDownloadComponent _FileStreamDownloadComponent;
+    FileStreamUploadComponent _FileStreamUploadComponent;
+    private string _ImageDataURL = "icon-192.png";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // This will load the image into a stream and the Download Stream Component will handle it.
+        //TestStream = new MemoryStream(File.ReadAllBytes("icon-192.png"));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // This JS method can be found in the ComponentMethods.js file
+            // This will load the image into a stream and the Download Stream Component will handle it.
+            TestStream = new MemoryStream(File.ReadAllBytes($"Images/icon-192.png"));
+            await InputToFocusOn.AsyncFocus();
+        }
+    }
+
+    public async Task DownloadImage()
+    {
+        try
+        {
+            await _FileStreamDownloadComponent.DownloadFileFromStream("TestPicture.png", TestStream);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+
+        }
+    }
+
+    public void LoadImage()
+    {
+        try
+        {
+            _ImageDataURL = _FileStreamUploadComponent.LoadFileOnScreen();
+
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+
+        }
+    }
+}

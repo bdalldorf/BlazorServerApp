@@ -1,0 +1,73 @@
+﻿@page "/QRCodeGeneratorPage"
+@using System.Text;
+@using QRCoder;
+
+<PageTitle>QR Code Generator</PageTitle>
+
+<div class="container">
+    <div class="row p-2">
+        <div class="col-md-12 d-flex justify-content-center"><input @bind="_QRTextToGenerate" placeholder="Type or Paste URL here ..." alt="Type or Paste URL here ..." maxlength="1000" style="width:100%;" /></div>
+    </div>
+    <div class="row p-2">
+        <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="QRGenerate">Generate QR Code</button></div>
+    </div>
+    <div class="row p-2">
+        <div class="col-md-12 d-flex justify-content-center"><img src="@_ImageDataURL" alt="Example PNG Image" style="width:100%; max-width:400px; height:auto;"></div>
+    </div>
+    <div class="row p-2">
+        <div class="col-md-12 d-flex justify-content-center">@_QRGeneratedTextLabel</div>
+    </div>
+    <div class="row p-2">
+        <div class="col-md-12 d-flex justify-content-center"><FileStreamDownloadComponent @ref=_FileStreamDownloadComponent OnClickCallback="DownloadQRCode" /></div>
+    </div>
+</div>
+
+@code {
+    private string _ImageDataURL = "icon-192.png";
+    private string _QRTextToGenerate { get; set; } = string.Empty;
+    private string _QRGeneratedTextLabel { get; set; } = string.Empty;
+    private Stream _QRCodeImageStream { get; set; }
+    FileStreamDownloadComponent _FileStreamDownloadComponent;
+
+    private void QRGenerate()
+    {
+        try
+        {
+            QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(_QRTextToGenerate, QRCodeGenerator.ECCLevel.Q);
+            PngByteQRCode pngByteQRCode = new PngByteQRCode(qrCodeData);
+            byte[] qrCodeImage = pngByteQRCode.GetGraphic(20);
+
+            string imageSource = Convert.ToBase64String(qrCodeImage);
+            _ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+             
+            _QRCodeImageStream = new MemoryStream(qrCodeImage);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _QRGeneratedTextLabel = _QRTextToGenerate;
+        }
+    }
+
+    public async Task DownloadQRCode()
+    {
+        try
+        {
+            // Check on the Read Position for the Stream
+            // You can only download it once becuase it reads to the end and is still open.
+            await _FileStreamDownloadComponent.DownloadFileFromStream("QRCode.png", _QRCodeImageStream);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            
+        }
+    }
+}
