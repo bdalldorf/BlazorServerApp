@@ -1,0 +1,3 @@
+[submodule "RazorUIComponentLibrary"]
+	path = RazorUIComponentLibrary
+	url = https://github.com/bdalldorf/RazorUIComponentLibrary.git
