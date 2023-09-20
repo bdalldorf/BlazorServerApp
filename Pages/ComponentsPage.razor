@@ -86,11 +86,13 @@
             <div class="card">
                 <h5 class="card-header bg-dark text-white">Upload File To Stream</h5>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row p-2">
                         <div class="col">
                             <FileStreamUploadComponent @ref=_FileStreamUploadComponent OnClickCallback=LoadImage ButtonText="Load File" />
                         </div>
-                        <div class="col">
+                    </div>
+                    <div class="row p-2">
+                        <div class="col d-flex justify-content-center">
                             <img src="@_ImageDataURL" alt="Example PNG Image" style="width:100%; max-width:100px; height:auto;">
                         </div>
                     </div>
