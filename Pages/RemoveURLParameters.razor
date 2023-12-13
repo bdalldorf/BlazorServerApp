@@ -11,14 +11,25 @@
     <div class="row p-2">
         <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="RemoveURLParameter">Remove URL Parameters</button></div>
     </div>
-    <div class="row p-2">
-        <div class="col-md-12 d-flex justify-content-center"><a href="@_URLTextGeneratedTextLabel" target="_blank">@_URLTextGeneratedTextLabel</a></div>
-    </div>
+</div>
+<div class="row p-2">
+    @if (@_URLWithRemovedParameters != string.Empty)
+    {
+        <div class="col-md-12 d-flex justify-content-center">
+            <a href="@_URLWithRemovedParameters" class="btn btn-success" role="button" target="_blank">Open Link</a>
+        </div>
+    }
+</div>
+<div class="row p-2">
+    @if (@_URLWithRemovedParameters != string.Empty)
+    {
+        <div class="col-md-12 d-flex justify-content-center text-wrap">@_URLWithRemovedParameters</div>
+    }
 </div>
 
 @code {
     private string _URLTextToClean { get; set; } = string.Empty;
-    private string _URLTextGeneratedTextLabel { get; set; } = string.Empty;
+    private string _URLWithRemovedParameters { get; set; } = string.Empty;
 
     private void RemoveURLParameter()
     {
@@ -35,7 +46,7 @@
         }
         finally
         {
-            _URLTextGeneratedTextLabel = cleanURI;
+            _URLWithRemovedParameters = cleanURI;
         }
     }
 }
