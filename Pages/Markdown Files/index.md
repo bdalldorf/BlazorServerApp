@@ -7,4 +7,4 @@
 	- Blazor Server Application
 		- https://github.com/bdalldorf/BlazorServerApp
 	- Blazor Components Library
-		- https://github.com/bdalldorf/RazorUIComponentLibrary/settings
+		- https://github.com/bdalldorf/RazorUIComponentLibrary
