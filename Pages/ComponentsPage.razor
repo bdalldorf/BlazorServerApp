@@ -100,14 +100,28 @@
             </div>
         </div>
     </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header bg-dark text-white">Loading Panel</h5>
+                <div class="card-body" @ref=_ShowLoadingPanelDiv>
+                    <div class="col-sm-auto p-2 d-flex justify-content-center">
+                        <button class="btn btn-primary" @onclick="ShowLoadingPanel">Show Loading Panel</button>
+                    </div>
+                </div>
+                <LoadingOverlayComponent @ref=_LoadingOverlayComponent />
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
-
-    private PhoneNumberComponent InputToFocusOn;
+    private PhoneNumberComponent InputToFocusOn { get; set; }
     private Stream? TestStream { get; set; }
-    FileStreamDownloadComponent _FileStreamDownloadComponent;
-    FileStreamUploadComponent _FileStreamUploadComponent;
+    private FileStreamDownloadComponent _FileStreamDownloadComponent { get; set; }
+    private FileStreamUploadComponent _FileStreamUploadComponent { get; set; }
+    private LoadingOverlayComponent _LoadingOverlayComponent { get; set; }
+    private ElementReference _ShowLoadingPanelDiv { get; set; }
     private string _ImageDataURL = "icon-192.png";
 
     protected override async Task OnInitializedAsync()
@@ -143,12 +157,30 @@
         }
     }
 
-    public void LoadImage()
+    public async Task LoadImage()
     {
         try
         {
-            _ImageDataURL = _FileStreamUploadComponent.LoadFileOnScreen();
+            _ImageDataURL = await _FileStreamUploadComponent.LoadFileOnScreen();
 
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+
+        }
+    }
+
+    public async Task ShowLoadingPanel()
+    {
+        try
+        {
+            await _LoadingOverlayComponent.ShowLoadingOverlay(_ShowLoadingPanelDiv);
+            Thread.Sleep(3000);
+            await _LoadingOverlayComponent.HideLoadingOverlay(_ShowLoadingPanelDiv);
         }
         catch (Exception exception)
         {
