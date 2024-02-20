@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorUIComponentLibrary", "RazorUIComponentLibrary\RazorUIComponentLibrary.csproj", "{68F8DE6B-7824-48BA-9A04-5D2381F8CD49}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net8WebAPI", "..\bdalldorf.tech.api\Net8WebAPI\NetCore6WebAPI\Net8WebAPI.csproj", "{E3D4BDAF-7246-4F12-9579-8DF9B2599A3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net8WebAPI", "..\bdalldorf.tech.api\Net8WebAPI\NetCore8WebAPI\Net8WebAPI.csproj", "{E3D4BDAF-7246-4F12-9579-8DF9B2599A3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net8APIDataTransfer", "..\bdalldorf.tech.api\Net8APIDataTransfer\Net8APIDataTransfer.csproj", "{65279C02-7284-4145-A080-A2D768396FE0}"
 EndProject
