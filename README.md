@@ -13,3 +13,7 @@
 ### Deployment
 ##
   - https://bdalldorf.tech/
+
+### Please Note:
+##
+  - I am using an API that I made that is not public. Just remove it from project
