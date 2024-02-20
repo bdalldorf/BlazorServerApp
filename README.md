@@ -2,8 +2,8 @@
 ### Blazor Application Build
 ##
 - Microsoft Visual Studio Community 2022 (64-bit)
-- .NET 7 
-	-	https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+- .NET 8 
+	-	https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 -	Github: 
 	- Blazor Server Application
 		- https://github.com/bdalldorf/BlazorServerApp
