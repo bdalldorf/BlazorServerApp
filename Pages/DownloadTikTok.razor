@@ -42,7 +42,14 @@
 
         try
         {
+            _URLTextToClean = _URLTextToClean.Substring(_URLTextToClean.IndexOf("https://www.tiktok.com"));
+            int endOfURLIndex = _URLTextToClean.IndexOf(" ");
+
+            if (endOfURLIndex > 0)
+                _URLTextToClean = _URLTextToClean.Substring(0, endOfURLIndex);
+
             Uri uri = new Uri(_URLTextToClean);
+
             cleanURI = uri.GetLeftPart(UriPartial.Path);
 
             var options = new RestClientOptions("https://www.tiktok.com/")
@@ -51,7 +58,7 @@
                 };
 
             var client = new RestClient(options);
-            string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownload?url={cleanURI}";
+            string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownload?url={cleanURI}&user=admin";
             var request = new RestRequest(url, Method.Get);
             request.AddHeader("Accept", "*/*");
             request.AddHeader("Accept-Encoding", "gzip, deflate, br");
