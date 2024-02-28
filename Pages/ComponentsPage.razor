@@ -11,7 +11,7 @@
                 <h5 class="card-header bg-dark text-white">Phone Number Control</h5>
                 <div class="card-body">
                     <div class="col-md-12 d-flex justify-content-left">
-                        <PhoneNumberComponent @ref="InputToFocusOn" />
+                        <PhoneNumberComponent @ref="FieldToFocusOn" />
                     </div>
                 </div>
             </div>
@@ -116,7 +116,10 @@
 </div>
 
 @code {
-    private PhoneNumberComponent InputToFocusOn { get; set; }
+    // The FieldToFocusOn is just a reference to a field that you want to give focus.
+    // In this case it's the PhoneNumberComponent.
+    // You can use this to change which field is initially focused on.
+    private PhoneNumberComponent FieldToFocusOn { get; set; }
     private Stream? TestStream { get; set; }
     private FileStreamDownloadComponent _FileStreamDownloadComponent { get; set; }
     private FileStreamUploadComponent _FileStreamUploadComponent { get; set; }
@@ -134,10 +137,10 @@
     {
         if (firstRender)
         {
-            // This JS method can be found in the ComponentMethods.js file
-            // This will load the image into a stream and the Download Stream Component will handle it.
             TestStream = new MemoryStream(File.ReadAllBytes($"Images/icon-192.png"));
-            await InputToFocusOn.AsyncFocus();
+
+            // This will change the focus to this field.
+            await FieldToFocusOn.AsyncFocus();
         }
     }
 
@@ -180,7 +183,6 @@
         {
             await _LoadingOverlayComponent.ShowLoadingOverlay(_ShowLoadingPanelDiv);
             Thread.Sleep(3000);
-            await _LoadingOverlayComponent.HideLoadingOverlay(_ShowLoadingPanelDiv);
         }
         catch (Exception exception)
         {
@@ -188,7 +190,7 @@
         }
         finally
         {
-
+            await _LoadingOverlayComponent.HideLoadingOverlay(_ShowLoadingPanelDiv);
         }
     }
 }
