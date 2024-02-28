@@ -85,10 +85,10 @@
         <div class="col">
             <div class="card">
                 <h5 class="card-header bg-dark text-white">Upload File To Stream</h5>
-                <div class="card-body">
+                <div class="card-body" @ref=_ShowLoadingPanelStreamUploadDiv>
                     <div class="row p-2">
                         <div class="col">
-                            <FileStreamUploadComponent @ref=_FileStreamUploadComponent OnClickCallback=LoadImage ButtonText="Load File" />
+                            <FileStreamUploadComponent @ref=_FileStreamUploadComponent OnClickCallback=LoadImage ButtonText="Load File" ShowLoadingOverlay=false />
                         </div>
                     </div>
                     <div class="row p-2">
@@ -97,6 +97,7 @@
                         </div>
                     </div>
                 </div>
+                <LoadingOverlayComponent @ref=_LoadingOverlayComponentFileStreamUpload />
             </div>
         </div>
     </div>
@@ -123,8 +124,12 @@
     private Stream? TestStream { get; set; }
     private FileStreamDownloadComponent _FileStreamDownloadComponent { get; set; }
     private FileStreamUploadComponent _FileStreamUploadComponent { get; set; }
+
     private LoadingOverlayComponent _LoadingOverlayComponent { get; set; }
     private ElementReference _ShowLoadingPanelDiv { get; set; }
+
+    private LoadingOverlayComponent _LoadingOverlayComponentFileStreamUpload{ get; set; }
+    private ElementReference _ShowLoadingPanelStreamUploadDiv{ get; set; }
     private string _ImageDataURL = "icon-192.png";
 
     protected override async Task OnInitializedAsync()
@@ -164,6 +169,7 @@
     {
         try
         {
+            await _LoadingOverlayComponentFileStreamUpload.ShowLoadingOverlay(_ShowLoadingPanelStreamUploadDiv);
             _ImageDataURL = await _FileStreamUploadComponent.LoadFileOnScreen();
 
         }
@@ -173,7 +179,7 @@
         }
         finally
         {
-
+            await _LoadingOverlayComponentFileStreamUpload.HideLoadingOverlay(_ShowLoadingPanelStreamUploadDiv);
         }
     }
 
