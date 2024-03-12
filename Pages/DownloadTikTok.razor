@@ -2,43 +2,69 @@
 @using System.Text;
 @using RestSharp;
 
+
 <h3>Download TikToc Video</h3>
 
 <div class="container" @ref=_FileDownloadMainElement>
     <div class="row p-2">
-        <div class="col-md-12 d-flex justify-content-center"><input @bind="_URLTextToClean" placeholder="Paste URL here ..." alt="Paste URL here ..." maxlength="1000" style="width:100%;" /></div>
+        <div class="col">
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><input @bind="_URLTextToClean" placeholder="Paste URL here ..." alt="Paste URL here ..." maxlength="1000" style="width:100%;" /></div>
+            </div>
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetTikTokVideo">Download Video</button></div>
+            </div>
+            @if (@_URLWithRemovedParameters != string.Empty)
+            {
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="@_URLWithRemovedParameters" class="btn btn-success" role="button" target="_blank">Open Link</a>
+                    </div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center text-wrap">@_URLWithRemovedParameters</div>
+                </div>
+            }
+            <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadMainElement />
+        </div>
     </div>
-    <div class="row p-2">
-        <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetTikTokVideo">Download Video</button></div>
-    </div>
-    <LoadingOverlayComponent @ref=_LoadingOverlayComponent />
-</div>
-<div class="row p-2">
     @if (@_URLWithRemovedParameters != string.Empty)
     {
-        <div class="col-md-12 d-flex justify-content-center">
-            <a href="@_URLWithRemovedParameters" class="btn btn-success" role="button" target="_blank">Open Link</a>
+        <div class="row p-2">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header bg-dark text-white">Thumbnail Image Preview</h5>
+                    <div class="card-body" @ref=_FileDownloadImageElement>
+                        <div class="row p-2">
+                            <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetTikTokVideoImage">Click for Image Preview</button></div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img src="@ImageDataURL" alt="" style="width:100%; max-width:100px; height:auto;">
+                            </div>
+                        </div>
+                    </div>
+                    <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadImage />
+                </div>
+            </div>
         </div>
     }
 </div>
-<div class="row p-2">
-    @if (@_URLWithRemovedParameters != string.Empty)
-    {
-        <div class="col-md-12 d-flex justify-content-center text-wrap">@_URLWithRemovedParameters</div>
-    }
-</div>
-
 @code {
     private string _URLTextToClean { get; set; } = string.Empty;
     private string _URLWithRemovedParameters { get; set; } = string.Empty;
+    public string ImageDataURL = "";
 
-    private LoadingOverlayComponent _LoadingOverlayComponent { get; set; }
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadMainElement { get; set; }
     private ElementReference _FileDownloadMainElement { get; set; }
 
-    public void GetTikTokVideo()
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadImage { get; set; }
+    private ElementReference _FileDownloadImageElement { get; set; }
+
+    public async Task GetTikTokVideo()
     {
         string cleanURI = string.Empty;
-        _LoadingOverlayComponent.ShowLoadingOverlay(_FileDownloadMainElement);
+        _LoadingOverlayFileDownloadMainElement.ShowLoadingOverlay(_FileDownloadMainElement);
 
         try
         {
@@ -52,18 +78,9 @@
 
             cleanURI = uri.GetLeftPart(UriPartial.Path);
 
-            var options = new RestClientOptions("https://www.tiktok.com/")
-                {
-                    MaxTimeout = -1,
-                };
-
-            var client = new RestClient(options);
+            var client = new RestClient();
             string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownload?url={cleanURI}&user=admin";
             var request = new RestRequest(url, Method.Get);
-            request.AddHeader("Accept", "*/*");
-            request.AddHeader("Accept-Encoding", "gzip, deflate, br");
-            request.AddHeader("Accept-Language", "en-US,en;q=0.9");
-            request.AddHeader("Connection", "keep-alive");
             RestResponse response = client.Execute(request);
 
             cleanURI = response.Content;
@@ -75,7 +92,33 @@
         finally
         {
             _URLWithRemovedParameters = cleanURI;
-            _LoadingOverlayComponent.HideLoadingOverlay(_FileDownloadMainElement);
+            _LoadingOverlayFileDownloadMainElement.HideLoadingOverlay(_FileDownloadMainElement);
+        }
+    }
+
+    public async Task GetTikTokVideoImage()
+    {
+        try
+        {
+            _LoadingOverlayFileDownloadImage.ShowLoadingOverlay(_FileDownloadImageElement);
+
+            var client = new RestClient();
+
+            string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownloadimages?videoURL={_URLWithRemovedParameters}&user=admin";
+            var request = new RestRequest(url, Method.Get);
+            RestResponse response = await client.ExecuteAsync(request);
+
+            string imageSource = response.Content.Replace("\"", "");
+            ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+            Thread.Sleep(3000);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _LoadingOverlayFileDownloadImage.HideLoadingOverlay(_FileDownloadImageElement);
         }
     }
 }
