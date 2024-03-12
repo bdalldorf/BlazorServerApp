@@ -40,7 +40,7 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-md-12 d-flex justify-content-center">
-                                <img src="@ImageDataURL" alt="" style="width:100%; max-width:100px; height:auto;">
+                                <img src="@ImageDataURL" alt="" style="width:100%; height:auto; max-width:800px; max-height:235px;">
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
             var request = new RestRequest(url, Method.Get);
             RestResponse response = client.Execute(request);
 
-            cleanURI = response.Content;
+            cleanURI = response.Content.Replace("\"", "");
         }
         catch (Exception exception)
         {
@@ -106,7 +106,7 @@
 
             string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownloadimages?videoURL={_URLWithRemovedParameters}&user=admin";
             var request = new RestRequest(url, Method.Get);
-            RestResponse response = await client.ExecuteAsync(request);
+            RestResponse response = client.Execute(request);
 
             string imageSource = response.Content.Replace("\"", "");
             ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
