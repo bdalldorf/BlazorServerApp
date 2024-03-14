@@ -16,4 +16,4 @@
 
 ### Please Note:
 ##
-  - I am using an API that I made that is not public. Just remove it from project
+  - I am referencing an API and Utility project that are not public. Just remove them if you want to load the Blazor App. 
