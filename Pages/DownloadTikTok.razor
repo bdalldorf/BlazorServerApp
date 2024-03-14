@@ -36,11 +36,16 @@
                     <h5 class="card-header bg-dark text-white">Thumbnail Image Preview</h5>
                     <div class="card-body" @ref=_FileDownloadImageElement>
                         <div class="row p-2">
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameInSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" /></div>
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameWidth" placeholder="Width Of Image ..." alt="Width Of Image ..." maxlength="4" style="width:100%;" /></div>
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" /></div>
+                        </div>
+                        <div class="row p-2">
                             <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetTikTokVideoImage">Click for Image Preview</button></div>
                         </div>
                         <div class="row p-2">
                             <div class="col-md-12 d-flex justify-content-center">
-                                <img src="@ImageDataURL" alt="" style="width:100%; height:auto; max-width:800px; max-height:235px;">
+                                <img src="@ImageDataURL" alt="" style="width:100%; height:auto; max-width:1200px; max-height:1200px;">
                             </div>
                         </div>
                     </div>
@@ -60,6 +65,10 @@
 
     private LoadingOverlayComponent _LoadingOverlayFileDownloadImage { get; set; }
     private ElementReference _FileDownloadImageElement { get; set; }
+
+    private int _ImageFrameInSeconds = 2;
+    private int _ImageFrameWidth = 1200;
+    private int _ImageFrameHeight = 635;
 
     public async Task GetTikTokVideo()
     {
@@ -104,7 +113,7 @@
 
             var client = new RestClient();
 
-            string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownloadimages?videoURL={_URLWithRemovedParameters}&user=admin";
+            string url = $"https://api.bdalldorf.tech/apitest/testiktokfiledownloadimages?videoURL={_URLWithRemovedParameters}&user=admin&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
             var request = new RestRequest(url, Method.Get);
             RestResponse response = client.Execute(request);
 
