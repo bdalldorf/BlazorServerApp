@@ -1,0 +1,91 @@
+﻿@page "/URLResponse"
+@using System.Text;
+@using Newtonsoft.Json;
+@using RestSharp;
+@using BDCSharpModels.Video;
+@inject IJSRuntime jsRuntime
+
+<script>
+    window.clipboardCopy = {
+        copyText: function (codeElement) {
+            navigator.clipboard.writeText(codeElement.textContent).then(function () {
+                alert("Copied to clipboard.");
+            })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }
+    }
+</script>
+
+<h3>Get URL Response</h3>
+
+<div class="container" @ref=_FileDownloadMainElement>
+    <div class="row p-2">
+        <div class="col">
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><input @bind="_URL" placeholder="Paste URL here ..." alt="Paste URL here ..." maxlength="1000" style="width:100%;" /></div>
+            </div>
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetPageResponse">Get Page Response</button></div>
+            </div>
+            <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadMainElement />
+        </div>
+    </div>
+    @if (@_ResponseContent != string.Empty)
+    {
+        <div class="row p-2">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header bg-dark text-white">Page Response Content</h5>
+                    <div style="position:absolute; top: 10px; right: 10px;">
+                        <button type="button" class="btn btn-primary" @onclick="CopyTextToClipboard">Copy</button>
+                    </div>
+                    <div class="card-body">
+                        <pre>
+                        <code @ref="_CodeElement">
+                                @_ResponseContent
+                        </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@code {
+    private ElementReference _CodeElement;
+    private string _URL { get; set; } = string.Empty;
+    private string _ResponseContent { get; set; } = string.Empty;
+
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadMainElement { get; set; }
+    private ElementReference _FileDownloadMainElement { get; set; }
+
+    public async Task GetPageResponse()
+    {
+        _LoadingOverlayFileDownloadMainElement.ShowLoadingOverlay(_FileDownloadMainElement);
+
+        try
+        {
+            var client = new RestClient();
+            //string url = $"https://api.bdalldorf.tech/tiktok/filedownload/?url={_URL}&user=admin";
+            var request = new RestRequest(_URL, Method.Get);
+            RestResponse response = client.Execute(request);
+
+            _ResponseContent = response.Content;
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _LoadingOverlayFileDownloadMainElement.HideLoadingOverlay(_FileDownloadMainElement);
+        }
+    }
+
+    private async Task CopyTextToClipboard()
+    {
+        await jsRuntime.InvokeVoidAsync("clipboardCopy.copyText", _CodeElement);
+    }
+}
