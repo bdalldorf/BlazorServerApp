@@ -32,6 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\bdalldorf.tech.api\BDCSharpModels\BDCSharpModels.csproj" />
+    <ProjectReference Include="..\bdalldorf.tech.api\Net8APIDataTransfer\Net8APIDataTransfer.csproj" />
     <ProjectReference Include="RazorUIComponentLibrary\RazorUIComponentLibrary.csproj" />
   </ItemGroup>
 
