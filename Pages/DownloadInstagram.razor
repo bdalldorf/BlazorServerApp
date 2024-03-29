@@ -1,0 +1,126 @@
+﻿@page "/DownloadInstagram"
+@using System.Text;
+@using Newtonsoft.Json;
+@using RestSharp;
+@using BDCSharpModels.Video;
+
+
+<h3>Download Instagram Video</h3>
+
+<div class="container" @ref=_FileDownloadMainElement>
+    <div class="row p-2">
+        <div class="col">
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><input @bind="_VideoURL" placeholder="Paste URL here ..." alt="Paste URL here ..." maxlength="1000" style="width:100%;" /></div>
+            </div>
+            <div class="row p-2">
+                <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetVideo">Download Video</button></div>
+            </div>
+            @if (@_UploadedVideoURL != string.Empty)
+            {
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="@_UploadedVideoURL" class="btn btn-success" role="button" target="_blank">Open Link</a>
+                    </div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center text-wrap">@_UploadedVideoURL</div>
+                </div>
+            }
+            <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadMainElement />
+        </div>
+    </div>
+    @if (@_UploadedVideoURL != string.Empty)
+    {
+        <div class="row p-2">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header bg-dark text-white">Thumbnail Image Preview</h5>
+                    <div class="card-body" @ref=_FileDownloadImageElement>
+                        <div class="row p-2">
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameInSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" /></div>
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameWidth" placeholder="Width Of Image ..." alt="Width Of Image ..." maxlength="4" style="width:100%;" /></div>
+                            <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" /></div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetVideoImage">Click for Image Preview</button></div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img src="@ImageDataURL" alt="" style="width:100%; height:auto; max-width:1200px; max-height:1200px;">
+                            </div>
+                        </div>
+                    </div>
+                    <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadImage />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@code {
+    private string _VideoURL { get; set; } = string.Empty;
+    private string _UploadedVideoURL { get; set; } = string.Empty;
+    public string ImageDataURL = "";
+
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadMainElement { get; set; }
+    private ElementReference _FileDownloadMainElement { get; set; }
+
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadImage { get; set; }
+    private ElementReference _FileDownloadImageElement { get; set; }
+
+    private int _ImageFrameInSeconds = 2;
+    private int _ImageFrameWidth = 800;
+    private int _ImageFrameHeight = 600;
+
+    public async Task GetVideo()
+    {
+        _LoadingOverlayFileDownloadMainElement.ShowLoadingOverlay(_FileDownloadMainElement);
+
+        try
+        {
+            Uri uri = new Uri(_VideoURL);
+
+            var client = new RestClient();
+            string url = $"https://api.bdalldorf.tech/instagram/filedownload/?url={uri.AbsoluteUri}&user=admin";
+            var request = new RestRequest(url, Method.Get);
+            RestResponse response = client.Execute(request);
+
+            VideoInfoModel videoModelInfo = JsonConvert.DeserializeObject<VideoInfoModel>(response.Content);
+            _UploadedVideoURL = videoModelInfo.WebPageURL;
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _LoadingOverlayFileDownloadMainElement.HideLoadingOverlay(_FileDownloadMainElement);
+        }
+    }
+
+    public async Task GetVideoImage()
+    {
+        try
+        {
+            _LoadingOverlayFileDownloadImage.ShowLoadingOverlay(_FileDownloadImageElement);
+
+            var client = new RestClient();
+
+            string url = $"https://api.bdalldorf.tech/instagram/filedownloadimage?videoURL={_UploadedVideoURL}&user=admin&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
+            var request = new RestRequest(url, Method.Get);
+            RestResponse response = client.Execute(request);
+
+            string imageSource = response.Content.Replace("\"", "");
+            ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+            Thread.Sleep(3000);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _LoadingOverlayFileDownloadImage.HideLoadingOverlay(_FileDownloadImageElement);
+        }
+    }
+}
