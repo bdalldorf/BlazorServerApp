@@ -85,8 +85,8 @@
             var request = new RestRequest(url, Method.Get);
             RestResponse response = client.Execute(request);
 
-            VideoInfoModel videoModelInfo = JsonConvert.DeserializeObject<VideoInfoModel>(response.Content);
-            _UploadedVideoURL = videoModelInfo.WebPageURL;
+            VideoDownloadResponseModel videoDownloadResponseModel = JsonConvert.DeserializeObject<VideoDownloadResponseModel>(response.Content);
+            _UploadedVideoURL = videoDownloadResponseModel.WebPageURL;
         }
         catch (Exception exception)
         {
