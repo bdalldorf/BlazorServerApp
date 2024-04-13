@@ -1,0 +1,53 @@
+﻿@page "/PHVideoDownloads"
+@using System.Text;
+@using Newtonsoft.Json;
+@using RestSharp;
+@using BDCSharpModels.DataTransferModels.Video;
+
+<h3>Download Video Page</h3>
+
+<div class="container">
+    <div class="row p-2">
+        <div class="row">
+            @foreach (string videoString in _VideoList)
+            {
+                string videoURL = $"{@videoString}.mp4#t=50";
+                <div class="col-sm-4">
+                    <video width="100%" height="95%" preload="metadata" controls>
+                        <source src="@videoURL" type="video/mp4" /> Your browser does not support
+                    the video tag.
+                </video>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+@code {
+    private List<string> _VideoList { get; set; } = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetVideos();
+    }
+
+    public async Task GetVideos()
+    {
+        try
+        {
+            RestClient restClient = new RestClient();
+            string urlAPI = $"https://api.bdalldorf.tech/ph/videolist/";
+            var restRequest = new RestRequest(urlAPI, Method.Get);
+            RestResponse restResponse = restClient.Execute(restRequest);
+
+            _VideoList = JsonConvert.DeserializeObject<List<string>>(restResponse.Content);
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+
+        }
+    }
+}

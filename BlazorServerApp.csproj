@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="RazorUIComponentLibrary\**" />
+    <Compile Remove="wwwroot\sharedvideos\**" />
     <Content Remove="RazorUIComponentLibrary\**" />
+    <Content Remove="wwwroot\sharedvideos\**" />
     <EmbeddedResource Remove="RazorUIComponentLibrary\**" />
+    <EmbeddedResource Remove="wwwroot\sharedvideos\**" />
     <None Remove="RazorUIComponentLibrary\**" />
+    <None Remove="wwwroot\sharedvideos\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +42,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js\" />
-    <Folder Include="wwwroot\sharedvideos\" />
   </ItemGroup>
 
 </Project>
