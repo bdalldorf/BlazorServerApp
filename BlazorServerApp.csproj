@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Development</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +27,7 @@
       <DependentUpon>web.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
-    <None Include="web.staging.config">
+    <None Include="web.development.config">
       <DependentUpon>web.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
