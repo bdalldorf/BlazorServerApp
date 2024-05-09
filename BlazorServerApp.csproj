@@ -18,6 +18,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="web.config">
+      <TransformOnBuild>True</TransformOnBuild>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="web.release.config">
+      <DependentUpon>web.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="web.staging.config">
+      <DependentUpon>web.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Images\icon-192.png" />
   </ItemGroup>
 
