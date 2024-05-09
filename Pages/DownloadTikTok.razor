@@ -49,7 +49,7 @@
         try
         {
             RestClient restClient = new RestClient();
-            string urlAPI = $"https://api.bdalldorf.tech/tiktok/filedownload/";
+            string urlAPI = APIRoutes.TikTokDownloadRoute.FileDownload;
             var restRequest = new RestRequest(urlAPI, Method.Post);
             restRequest.AddBody(_VideoDownloadRequestModel);
             RestResponse restResponse = restClient.Execute(restRequest);

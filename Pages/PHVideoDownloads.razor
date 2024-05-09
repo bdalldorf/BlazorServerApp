@@ -35,7 +35,7 @@
         try
         {
             RestClient restClient = new RestClient();
-            string urlAPI = $"https://api.bdalldorf.tech/ph/videolist/";
+            string urlAPI = APIRoutes.PHDownloadRoute.VideoList;
             var restRequest = new RestRequest(urlAPI, Method.Get);
             RestResponse restResponse = restClient.Execute(restRequest);
 
