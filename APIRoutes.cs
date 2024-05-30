@@ -26,6 +26,14 @@
             public static readonly string VideoList = $"{APIHost}/ph/videolist/";
         }
 
+        public static class YTDownloadRoute
+        {
+            public static readonly string FileDownload = $"{APIHost}/yt/filedownload/";
+            public static readonly string FileDownloadImage = $"{APIHost}/yt/filedownloadimage/";
+            public static readonly string UpdateHtmlPage = $"{APIHost}/yt/updatehtmlpage/";
+            public static readonly string VideoList = $"{APIHost}/yt/videolist/";
+        }
+
         public static class FacebookDownloadRoute
         {
             public static readonly string FileDownload = $"{APIHost}/facebook/filedownload/";
