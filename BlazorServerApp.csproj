@@ -56,8 +56,4 @@
     <ProjectReference Include="RazorUIComponentLibrary\RazorUIComponentLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\js\" />
-  </ItemGroup>
-
 </Project>
