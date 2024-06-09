@@ -1,0 +1,92 @@
+﻿@page "/VideoDownload";
+@page "/VideoDownload/{VideoType}/{UniqueID}";
+@using System.Text;
+@using Newtonsoft.Json;
+@using RestSharp;
+@using BDCSharpModels.DataTransferModels.Video;
+
+<h3>Download Video (Experimental)</h3>
+
+<div class="container" @ref=_FileDownloadMainElement>
+    <div class="row p-2">
+        <div class="col">
+            @if (_VideoDownloadResponseModel.WebPageURL != string.Empty)
+            {
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="@_VideoDownloadResponseModel.WebPageURL" class="btn btn-success" role="button" target="_blank">Open Link</a>
+                    </div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center text-wrap">@_VideoDownloadResponseModel.WebPageURL</div>
+                </div>
+                <VideoDownloadPreviewComponent @ref=_VideoDownloadPreviewComponent VideoDownloadResponseModel="_VideoDownloadResponseModel"></VideoDownloadPreviewComponent>
+            }
+        </div>
+    </div>
+    <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadMainElement></LoadingOverlayComponent>
+</div>
+
+@code {
+    [Parameter]
+    public string VideoType { get; set; } = string.Empty;
+    [Parameter]
+    public string UniqueID { get; set; } = string.Empty;
+
+    private VideoDownloadResponseModel _VideoDownloadResponseModel { get; set; } = new VideoDownloadResponseModel();
+
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadMainElement { get; set; }
+    private ElementReference _FileDownloadMainElement { get; set; }
+
+    private VideoDownloadPreviewComponent _VideoDownloadPreviewComponent { get; set; } = new VideoDownloadPreviewComponent();
+
+    public async Task<bool> CheckIfTheVideoIsDownloaded()
+    {
+        _VideoDownloadResponseModel.UniqueID = UniqueID;
+        bool doesFileExist = false;
+
+        switch (VideoType)
+        {
+            case "ph":
+                RestClient restClient = new RestClient();
+                string urlAPI = APIRoutes.PHDownloadRoute.CheckForCompletedFile;
+                var restRequest = new RestRequest(urlAPI, Method.Post);
+
+                restRequest.AddBody(_VideoDownloadResponseModel);
+                RestResponse restResponse = restClient.Execute(restRequest);
+
+                _VideoDownloadResponseModel = JsonConvert.DeserializeObject<VideoDownloadResponseModel>(restResponse.Content);
+                break;
+        }
+
+        return _VideoDownloadResponseModel.IsVideoDownloaded;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _LoadingOverlayFileDownloadMainElement.ShowLoadingOverlay(_FileDownloadMainElement);
+
+            try
+            {
+                int count = 0;
+                bool fileFound = CheckIfTheVideoIsDownloaded().Result;
+
+                while (!fileFound && count < 60)
+                {
+                    Thread.Sleep(5000);
+                    fileFound = CheckIfTheVideoIsDownloaded().Result;
+                }
+            }
+            catch (Exception exception)
+            {
+            }
+            finally
+            {
+                StateHasChanged();
+                _LoadingOverlayFileDownloadMainElement.HideLoadingOverlay(_FileDownloadMainElement);
+            }
+        }
+    }
+}

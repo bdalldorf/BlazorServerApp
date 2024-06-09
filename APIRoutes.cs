@@ -23,6 +23,7 @@
             public static readonly string FileDownload = $"{APIHost}/ph/filedownload/";
             public static readonly string FileDownloadImage = $"{APIHost}/ph/filedownloadimage/";
             public static readonly string UpdateHtmlPage = $"{APIHost}/ph/updatehtmlpage/";
+            public static readonly string CheckForCompletedFile = $"{APIHost}/ph/checkforcompletedfile/";
             public static readonly string VideoList = $"{APIHost}/ph/videolist/";
         }
 
