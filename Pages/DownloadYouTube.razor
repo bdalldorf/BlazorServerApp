@@ -1,4 +1,5 @@
-﻿@page "/DownloadYouTube"
+﻿@page "/DownloadYouTube";
+@inject NavigationManager NavigationManager;
 @using System.Text;
 @using Newtonsoft.Json;
 @using RestSharp;
@@ -55,6 +56,8 @@
             RestResponse restResponse = restClient.Execute(restRequest);
 
             _VideoDownloadResponseModel = JsonConvert.DeserializeObject<VideoDownloadResponseModel>(restResponse.Content);
+
+            NavigationManager.NavigateTo($"VideoDownload/yt/{_VideoDownloadResponseModel.UniqueID}");
         }
         catch (Exception exception)
         {

@@ -32,6 +32,7 @@
             public static readonly string FileDownload = $"{APIHost}/yt/filedownload/";
             public static readonly string FileDownloadImage = $"{APIHost}/yt/filedownloadimage/";
             public static readonly string UpdateHtmlPage = $"{APIHost}/yt/updatehtmlpage/";
+            public static readonly string CheckForCompletedFile = $"{APIHost}/yt/checkforcompletedfile/";
             public static readonly string VideoList = $"{APIHost}/yt/videolist/";
         }
 

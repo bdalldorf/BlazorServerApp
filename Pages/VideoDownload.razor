@@ -5,7 +5,7 @@
 @using RestSharp;
 @using BDCSharpModels.DataTransferModels.Video;
 
-<h3>Download Video (Experimental)</h3>
+<h3>Download Video - @_FromSource</h3>
 
 <div class="container" @ref=_FileDownloadMainElement>
     <div class="row p-2">
@@ -33,6 +33,8 @@
     [Parameter]
     public string UniqueID { get; set; } = string.Empty;
 
+    private string _FromSource { get; set; } = string.Empty;
+
     private VideoDownloadResponseModel _VideoDownloadResponseModel { get; set; } = new VideoDownloadResponseModel();
 
     private LoadingOverlayComponent _LoadingOverlayFileDownloadMainElement { get; set; }
@@ -40,29 +42,51 @@
 
     private VideoDownloadPreviewComponent _VideoDownloadPreviewComponent { get; set; } = new VideoDownloadPreviewComponent();
 
-    public async Task<bool> CheckIfTheVideoIsDownloaded()
+    public bool CheckIfTheVideoIsDownloaded()
     {
         _VideoDownloadResponseModel.UniqueID = UniqueID;
         bool doesFileExist = false;
 
+        string urlAPI = string.Empty;
+
         switch (VideoType)
         {
             case "ph":
-                RestClient restClient = new RestClient();
-                string urlAPI = APIRoutes.PHDownloadRoute.CheckForCompletedFile;
-                var restRequest = new RestRequest(urlAPI, Method.Post);
-
-                restRequest.AddBody(_VideoDownloadResponseModel);
-                RestResponse restResponse = restClient.Execute(restRequest);
-
-                _VideoDownloadResponseModel = JsonConvert.DeserializeObject<VideoDownloadResponseModel>(restResponse.Content);
+                urlAPI = APIRoutes.PHDownloadRoute.CheckForCompletedFile;
+                break;
+            case "yt":
+                urlAPI = APIRoutes.YTDownloadRoute.CheckForCompletedFile;
                 break;
         }
+
+        RestClient restClient = new RestClient();
+        var restRequest = new RestRequest(urlAPI, Method.Post);
+
+        restRequest.AddBody(_VideoDownloadResponseModel);
+        RestResponse restResponse = restClient.Execute(restRequest);
+
+        _VideoDownloadResponseModel = JsonConvert.DeserializeObject<VideoDownloadResponseModel>(restResponse.Content);
 
         return _VideoDownloadResponseModel.IsVideoDownloaded;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnParametersSet()
+    {
+        switch (VideoType)
+        {
+            case "ph":
+                _FromSource = "Experimental";
+                break;
+            case "yt":
+                _FromSource = "YouTube";
+                break;
+            default:
+                _FromSource = "Experimental";
+                break;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
@@ -71,12 +95,13 @@
             try
             {
                 int count = 0;
-                bool fileFound = CheckIfTheVideoIsDownloaded().Result;
+                bool fileFound = CheckIfTheVideoIsDownloaded();
 
                 while (!fileFound && count < 60)
                 {
                     Thread.Sleep(5000);
-                    fileFound = CheckIfTheVideoIsDownloaded().Result;
+                    count++;
+                    fileFound = CheckIfTheVideoIsDownloaded();
                 }
             }
             catch (Exception exception)
